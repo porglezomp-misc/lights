@@ -5,12 +5,13 @@
 #include <avr/power.h>
 #include "robot_state.h"
 
+
 // Which pin on the Arduino is connected to the NeoPixels?
 // On a Trinket or Gemma we suggest changing this to 1
 #define PIN            8
 
 // How many NeoPixels are attached to the Arduino?
-#define NUMPIXELS      16
+#define NUMPIXELS      275
 
 // When we setup the NeoPixel library, we tell it how many pixels, and which pin to use to send signals.
 // Note that for older NeoPixel strips you might need to change the third parameter--see the strandtest
@@ -20,15 +21,32 @@ Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ80
 void setup() {
   pixels.begin();
 }
-
-void loop() {
- for(int j=0;j<NUMPIXELS;j++){
-   for(int i=0;i<NUMPIXELS;i++){
-    double val = (sin(j) + 1)/2;
-    val *= val;
-    pixels.setPixelColor(i, 0, 0, val*40);
-    pixels.show();
-    tick(50);
+  double LeftProgress = 0, RightProgress = 0;
+  void loop() {
+    Robotstate state = currentState();
+    switch(state) {
+    case Driving:
+     for(int j=0;j<NUMPIXELS;j++){
+      double left = sin((j+LeftProgress)*.6);
+      if (left < 0) left = 0;
+      left *= left;
+      double right = sin((j+RightProgress)*.6);
+      if (right < 0) right = 0;
+      right *= right;
+      pixels.setPixelColor(j, (left * 40)+(right * 40) ,0 , 0);
+     }
+       pixels.show();
+       tick(1);
+      break;
+     case Turning;
+      break;
+      default;
+      break;        
    }
+   RightProgress += rightMotorSpeed();
+   LeftProgress += leftMotorSpeed();
+   pixels.show();
+   tick(1);
   }
-}
+  
+
