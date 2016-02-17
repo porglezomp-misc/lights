@@ -21,32 +21,31 @@ Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ80
 void setup() {
   pixels.begin();
 }
-  double LeftProgress = 0, RightProgress = 0;
-  void loop() {
-    Robotstate state = currentState();
-    switch(state) {
-    case Driving:
-     for(int j=0;j<NUMPIXELS;j++){
-      double left = sin((j+LeftProgress)*.6);
+
+double LeftProgress = 0, RightProgress = 0;
+
+void loop() {
+  RobotState state = currentState();
+  switch(state){
+  case Driving:
+    for(int j=0;j<NUMPIXELS;j++){
+      double left = sin((j+LeftProgress)*.5);
       if (left < 0) left = 0;
       left *= left;
-      double right = sin((j+RightProgress)*.6);
+      double right = sin((j+RightProgress)*.5);
       if (right < 0) right = 0;
       right *= right;
-      pixels.setPixelColor(j, (left * 40)+(right * 40) ,0 , 0);
-     }
-       pixels.show();
-       tick(1);
-      break;
-     case Turning;
-      break;
-      default;
-      break;        
-   }
-   RightProgress += rightMotorSpeed();
-   LeftProgress += leftMotorSpeed();
-   pixels.show();
-   tick(1);
+      pixels.setPixelColor(j, left * 100 ,0 , right *100);
+    }
+    break;
+  case Turning:
+    
+    
   }
+  RightProgress += rightMotorSpeed() / 100;
+  LeftProgress += leftMotorSpeed() / 100;
+  pixels.show();
+  tick(1);
+}
   
 
