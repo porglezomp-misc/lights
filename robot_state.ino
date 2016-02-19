@@ -10,11 +10,11 @@ RobotState lastState() {
 }
 
 double leftMotorSpeed() {
-  return -10;
+  return 5;
 }
 
 double rightMotorSpeed() {
-  return 10;
+  return 5;
 }
 
 int currentStateTime() {
